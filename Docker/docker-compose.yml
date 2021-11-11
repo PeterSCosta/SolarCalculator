@@ -1,0 +1,48 @@
+version: '3.4'
+
+networks:
+    solarnet:
+        driver: bridge
+
+services:
+  solarcalculator:
+    image: ${DOCKER_REGISTRY-}solarcalculator
+    container_name: solarcalculator
+    build:
+      context: ../SolarCalculator/.
+      dockerfile: Dockerfile
+    networks:
+        - solarnet
+    ports:
+      - '5000:80'
+  sqlserver:  
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver
+    user: root
+    hostname: 'sqlserver'  
+    environment:  
+      ACCEPT_EULA: Y  
+      SA_PASSWORD: "%PeterCosta%"  
+    volumes:
+      - ./data-mssql:/var/opt/mssql/data
+    networks:
+        - solarnet
+    ports:  
+      - '1433:1433'  
+    expose:  
+      - 1433
+  node:
+    container_name: node
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    volumes:
+      - '../frontend:/app'
+      - '../frontend/node_modules:/app/node_modules'
+    ports:
+      - 3000:3000
+    networks:
+        - solarnet
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+

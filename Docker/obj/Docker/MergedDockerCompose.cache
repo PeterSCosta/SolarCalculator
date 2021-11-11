@@ -1,0 +1,43 @@
+services:
+  node:
+    build:
+      context: C:\Users\peter\Documents\Projetos\SolarCalculator\frontend
+      dockerfile: Dockerfile
+    container_name: node
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    ports:
+    - published: 3000
+      target: 3000
+    volumes:
+    - C:\Users\peter\Documents\Projetos\SolarCalculator\frontend:/app:rw
+    - C:\Users\peter\Documents\Projetos\SolarCalculator\frontend\node_modules:/app/node_modules:rw
+  solarcalculator:
+    build:
+      context: C:\Users\peter\Documents\Projetos\SolarCalculator\SolarCalculator
+      dockerfile: Dockerfile
+    container_name: solarcalculator
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    image: solarcalculator
+    ports:
+    - published: 5000
+      target: 80
+    volumes:
+    - C:\Users\peter\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+  sqlserver:
+    container_name: sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: '%PeterCosta%'
+    expose:
+    - '1433'
+    hostname: sqlserver
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+    - published: 1433
+      target: 1433
+    user: root
+    volumes:
+    - C:\Users\peter\Documents\Projetos\SolarCalculator\docker\data-mssql:/var/opt/mssql/data:rw
+version: '3.4'

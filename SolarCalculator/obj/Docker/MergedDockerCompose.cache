@@ -1,0 +1,28 @@
+services:
+  solarcalculator:
+    build:
+      context: C:\Users\peter\Documents\Projetos\SolarCalculator
+      dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: https://+:443;http://+:80
+    image: solarcalculator
+    ports:
+    - target: 80
+    - target: 443
+    volumes:
+    - C:\Users\peter\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+  sqlserverService:
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: '%PeterCosta%'
+    expose:
+    - '1433'
+    hostname: sqlserver
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+    - published: 1433
+      target: 1433
+    volumes:
+    - C:\Users\peter\Documents\Projetos\SolarCalculator\data\mssql:/var/opt/mssql:rw
+version: '3.4'
